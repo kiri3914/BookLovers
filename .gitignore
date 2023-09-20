@@ -1,0 +1,47 @@
+# Ignore Python byte code
+__pycache__/
+*.pyc
+
+# Ignore the virtual environment
+venv/
+
+
+# Ignore migration files
+/migrations/
+
+# Ignore log files
+*.log
+
+# Ignore auto-generated settings module
+settings.py
+
+# Ignore local development settings (adjust as needed)
+local_settings.py
+
+# Ignore media and static files (served in production)
+/media/
+/static/
+
+# Ignore the secret key (should be kept secret)
+secret_key.txt
+
+# Ignore environment-specific settings (e.g., .env files)
+.env
+
+# Ignore PyCharm specific files
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Ignore VSCode specific files
+.vscode/
+
+# Ignore system files (e.g., .DS_Store on macOS)
+.DS_Store
+
+# Ignore backup files
+*~
+
+# Ignore test files
+/tests/

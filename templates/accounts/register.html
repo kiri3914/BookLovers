@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %} Register {% endblock title %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Регистрация</h5>
+            <form action="{% url 'register' %}" method="post" class="needs-validation" novalidate>
+                {% csrf_token %}
+                 {% if form.errors %}
+                <div class="alert alert-danger mt-3">
+                    <strong>Errors:</strong> {{ form.errors }}
+                </div>
+                {% endif %}
+                {{ form.as_p }}
+
+                <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
