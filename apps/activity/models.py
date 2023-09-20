@@ -12,7 +12,7 @@ class Review(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.user.username + ' ' + self.rating
+        return self.user.username + ' ' + self.book.title + ' ' + str(self.rating)
 
 
 class Activity(models.Model):

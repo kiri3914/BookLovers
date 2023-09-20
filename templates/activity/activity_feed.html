@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="activity-feed">
+    {% for activity in activity_list %}
+      <div class="activity-item">
+        {% if activity.review %}
+          <p>{{ activity.review.user.username }} wrote a review for {{ activity.review.book.title }}</p>
+        {% endif %}
+        <p>Views: {{ activity.views }}</p>
+      </div>
+    {% endfor %}
+  </div>
+{% endblock %}
