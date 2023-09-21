@@ -1,14 +1,22 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <div class="activity-feed">
+<div class="activity-feed">
     {% for activity in activity_list %}
-      <div class="activity-item">
+
+    {% if activity.review.book.cover_image %}
+    <img src="{{ activity.review.book.cover_image.url }}" alt="" width="300">
+    {% endif %}
+    <div class="activity-item">
         {% if activity.review %}
-          <p>{{ activity.review.user.username }} wrote a review for {{ activity.review.book.title }}</p>
+        <p>{{ activity.review.user.username }} Поставил
+            <i class="fas fa-star"></i> <!-- Звездочка заполнена -->
+        </p>
         {% endif %}
+
+
         <p>Views: {{ activity.views }}</p>
-      </div>
+    </div>
     {% endfor %}
-  </div>
+</div>
 {% endblock %}

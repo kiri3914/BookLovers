@@ -31,4 +31,4 @@ class CustomUser(AbstractUser):
     USERNAME_FIELD = 'phone_number'
 
     def __str__(self):
-        return self.first_name
+        return self.username

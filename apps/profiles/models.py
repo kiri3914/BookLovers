@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 
 from apps.accounts.models import CustomUser
 from apps.books.models import Genre
@@ -10,6 +11,13 @@ class UserProfile(models.Model):
     profile_picture = models.ImageField(upload_to='profile/', blank=True, null=True)
     favorite_genres = models.ManyToManyField(Genre, blank=True, null=True)
 
+    def get_absolute_url(self):
+        return reverse('profile_detail', kwargs={'profile_id': self.id})
+
+    @property
+    def get_friends(self):
+        return self.user.friends.filter(status='accepted')
+
     def __str__(self):
         return self.user.username
 
@@ -19,6 +27,8 @@ class Friend(models.Model):
                              related_name='friends')
     friend = models.ForeignKey(CustomUser, on_delete=models.CASCADE,
                                related_name='user_friends')
+    status = models.CharField(max_length=10, choices=[('pending', 'Ожидание'), ('accepted', 'Принято')],
+                              default='pending')
 
     def __str__(self):
-        return f'{self.user.username} - {self.friend.username}'
+        return f"{self.user.username} - {self.friend.username} ({self.status})"

@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %} Профиль пользователя: {{ user_profile.user.username }} {% endblock title %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <h2>Профиль пользователя: {{ user_profile.user.username }}</h2>
+            <a type="submit" class="btn btn-success" href="{% url 'sent_friend_request' user_profile.user.id %}">Добавить в друзья</a>
+            <p><strong>Email:</strong> {{ user_profile.user.email }}</p>
+            <p><strong>Имя:</strong> {{ user_profile.user.first_name }}</p>
+            <p><strong>Фамилия:</strong> {{ user_profile.user.last_name }}</p>
+            <p><strong>Телефон:</strong> {{ user_profile.user.phone_number }}</p>
+            <p><strong>Дата рождения:</strong> {{ user_profile.user.birthdate }}</p>
+            <p><strong>О себе:</strong> {{ user_profile.user.bio }}</p>
+            <p><strong>Любимые жанры:</strong>
+                {% if user_profile.favorite_genres.all %}
+                {% for genre in user_profile.favorite_genres.all %}
+                {{ genre.name }}{% if not forloop.last %}, {% endif %}
+                {% endfor %}
+                {% else %}
+                Нет указанных жанров
+                {% endif %}
+            </p>
+            <hr>
+            <h3>Друзья:</h3>
+            <ul>
+                {% if user_profile.user.friends.all %}
+                {% for friend in user_profile.user.friends.all %}
+                <li><a href="{{ friend.friend.user_profile.get_absolute_url }}">{{ friend.friend.username }}</a></li>
+                {% endfor %}
+                {% endif %}
+
+                {% if user_profile.user.user_friends.all %}
+                {% for friend in user_profile.user.user_friends.all %}
+                <li><a href="{{ friend.user.user_profile.get_absolute_url }}">{{ friend.user.username }}</a></li>
+                {% endfor %}
+                {% endif %}
+            </ul>
+        </div>
+        <div class="col-md-6">
+            <!-- Здесь можно добавить фотографию профиля или другие дополнительные сведения -->
+        </div>
+    </div>
+</div>
+{% endblock content %}

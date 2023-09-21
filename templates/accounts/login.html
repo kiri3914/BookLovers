@@ -7,8 +7,8 @@
 <form action="{% url 'login' %}" method="post">
     {% csrf_token %}
     <div class="mb-3">
-        <label for="username" class="form-label">Username:</label>
-        <input type="text" class="form-control" id="username" name="username" required>
+        <label for="phone_number" class="form-label">Номер телефона:</label>
+        <input type="text" class="form-control" id="phone_number" name="phone_number" required>
     </div>
     <div class="mb-3">
         <label for="password" class="form-label">Password:</label>
