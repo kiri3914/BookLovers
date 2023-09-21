@@ -1,0 +1,43 @@
+
+{% extends 'base.html' %}
+
+{% block title %} Профиль пользователя: {{ user_profile.user.username }} {% endblock title %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <h2>Профиль пользователя: {{ user_profile.user.username }}</h2>
+             {% if user_profile.profile_picture %}
+            <img src="{{ user_profile.profile_picture.url }}" alt="" width="150" height="200">
+            {% else %}
+            <img src="https://img.wattpad.com/8f19b412f2223afe4288ed0904120a48b7a38ce1/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f776174747061642d6d656469612d736572766963652f53746f7279496d6167652f5650722d38464e2d744a515349673d3d2d3234323931353831302e313434336539633161633764383437652e6a7067"
+                 alt="" width="150" height="200">
+            {% endif %}
+            <p><strong>Email:</strong> {{ user_profile.user.email }}</p>
+            <p><strong>Имя:</strong> {{ user_profile.user.first_name }}</p>
+            <p><strong>Фамилия:</strong> {{ user_profile.user.last_name }}</p>
+            <p><strong>Телефон:</strong> {{ user_profile.user.phone_number }}</p>
+            <p><strong>Дата рождения:</strong> {{ user_profile.user.birthdate }}</p>
+            <p><strong>О себе:</strong> {{ user_profile.user.bio }}</p>
+            <p><strong>Любимые жанры:</strong>
+                {% if user_profile.favorite_genres.all %}
+                    {% for genre in user_profile.favorite_genres.all %}
+                        {{ genre.name }}{% if not forloop.last %}, {% endif %}
+                    {% endfor %}
+                {% else %}
+                    Нет указанных жанров
+                {% endif %}
+            </p>
+            <hr>
+            <h3>Друзья:</h3>
+            <ul>
+               <li>У вас пока нет друзей</li>
+            </ul>
+        </div>
+        <div class="col-md-6">
+            <!-- Здесь можно добавить фотографию профиля или другие дополнительные сведения -->
+        </div>
+    </div>
+</div>
+{% endblock content %}

@@ -12,12 +12,12 @@ class Review(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.user.username + ' ' + self.rating
+        return f'Пользователь {self.user.username} оценил книгу {self.book.title} на {self.rating}'
 
 
 class Activity(models.Model):
-    review = models.ForeignKey(Review, on_delete=models.CASCADE, blank=True, null=True)
+    review = models.ForeignKey(Review, on_delete=models.CASCADE)
     views = models.PositiveIntegerField(default=0)
 
     def __str__(self):
-        return self.review
+        return f'Пользователь {self.review.user.username} оценил книгу {self.review.book.title} на {self.review.rating}'
