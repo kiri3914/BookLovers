@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Q
 from django.urls import reverse
 
 from apps.accounts.models import CustomUser
@@ -17,6 +18,16 @@ class UserProfile(models.Model):
     def __str__(self):
         return self.user.username
 
+    @property
+    def get_friends(self):
+        user = self.user
+        friends_added_by_user = Friend.objects.filter(Q(user=user, status='accepted'))
+        friends_added_user = Friend.objects.filter(Q(friend=user, status='accepted'))
+        # friends = Friend.objects.filter(
+        #     Q(friend=user, status='accepted')
+        #     | Q(user=user, status='accepted'))
+        return friends_added_by_user | friends_added_user
+
 
 class Friend(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE,
@@ -24,5 +35,10 @@ class Friend(models.Model):
     friend = models.ForeignKey(CustomUser, on_delete=models.CASCADE,
                                related_name='user_friends')
 
+    status = models.CharField(max_length=10, choices=(('accepted', 'Принято'),
+                                                      ('rejected', 'Отклонено'),
+                                                      ('pending', 'Ожидание')),
+                              default='pending')
+
     def __str__(self):
-        return f'{self.user.username} - {self.friend.username}'
+        return f'{self.user.username} - {self.friend.username} ({self.status})'

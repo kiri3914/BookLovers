@@ -32,10 +32,42 @@
                 {% endfor %}
             </ul>
         </div>
+        {% if messages %}
+        <div class="alert alert-success">
+            <ul>
+                {% for message in messages %}
+                <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        <!-- Форма для добавления рецензии -->
+        <h2>Добавить рецензию</h2>
+        <form method="post" action="{% url 'book_detail' book_id=book.id %}">
+            {% csrf_token %}
+            {{ review_form.as_p }}
+            <button type="submit" class="btn btn-success">Отправить рецензию</button>
+        </form>
+
     </div>
 
     <a href="{% url 'book_list' %}" class="btn btn-primary mt-3">Вернуться к списку книг</a>
 </div>
 
+{% for review in review_list %}
+<div class="card mb-3">
+    <div class="card-header">
+        <h5 class="card-title">{{ review.user.username }}</h5>
+    </div>
+    <div class="card-body">
+        <h6 class="card-subtitle mb-2 text-muted">Рейтинг: {{ review.rating }} / 5</h6>
+        <p class="card-text">{{ review.text }}</p>
+    </div>
+    <div class="card-footer text-muted">
+        {{ review.created_at }}
+    </div>
+</div>
+{% endfor %}
 
 {% endblock content %}

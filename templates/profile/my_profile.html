@@ -31,9 +31,17 @@
             </p>
             <hr>
             <h3>Друзья:</h3>
-            <ul>
-               <li>У вас пока нет друзей</li>
-            </ul>
+        <ul>
+            {% for friend in user.user_profile.get_friends %}
+             {% if friend.user == user %}
+
+                <li>{{ friend.friend.username }} </li>
+            {% else %}
+
+            <li>{{ friend.user.username }}</li>
+            {% endif %}
+            {% endfor %}
+        </ul>
         </div>
         <div class="col-md-6">
             <!-- Здесь можно добавить фотографию профиля или другие дополнительные сведения -->
