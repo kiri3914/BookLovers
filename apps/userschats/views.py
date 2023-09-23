@@ -7,6 +7,7 @@ from django.core.paginator import Paginator
 from apps.accounts.models import CustomUser
 
 
+
 def get_users(request):
     page = int(request.GET.get('page', 1))
     search_query = request.GET.get('search', '')
