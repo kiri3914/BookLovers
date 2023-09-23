@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Личные чаты</h2>
+
+    <!-- Форма поиска пользователей -->
+    <form id="user-search-form">
+        <div class="input-group mb-4 shadow">
+            <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+            <input type="text" name="search" placeholder="Искать пользователя..." class="form-control">
+            <div class="input-group-append">
+                <button class="btn btn-primary" type="submit">Поиск</button>
+            </div>
+        </div>
+    </form>
+
+    <!-- Блок для результатов поиска -->
+    <div id="search-results"></div>
+
+    <!-- Список существующих личных чатов -->
+    <h4 class="mb-3">Мои личные чаты</h4>
+    <ul class="list-group shadow mb-4">
+        {% for data in chat_data %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            <h6><a href="{% url 'private_chat_detail' chatroom_id=data.chat.id %}" class="text-dark text-decoration-none">
+                Чат с {{ data.other_participant.username }}
+            </a></h6>
+            <a href="{% url 'delete_chatroom' chatroom_id=data.chat.id %}" class="text-danger btn btn-sm btn-outline-danger">
+                <i class="bi bi-trash"></i> Удалить
+            </a>
+        </li>
+        {% endfor %}
+    </ul>
+
+    <!-- Список всех пользователей -->
+    <h4 class="mb-3">Все пользователи</h4>
+<div>
+        {% for user in all_users_list %}
+            {% if user.id not in existing_chat_partners %}
+                <div class="card mb-3 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ user.username }}</h5>
+                        <a href="{% url 'create_or_open_private_chat' user_id=user.id %}" class="btn btn-sm btn-outline-success float-end">Начать чат</a>
+                    </div>
+                </div>
+            {% else %}
+                <div class="message"></div>
+            {% endif %}
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

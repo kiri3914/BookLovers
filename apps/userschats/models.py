@@ -15,6 +15,9 @@ class ChatRoom(models.Model):
             return self.room_name or f"Group chat of {self.participants.count()} members"
         return ', '.join([user.username for user in self.participants.all()])
 
+    def get_other_participant(self, user):
+        return self.participants.exclude(id=user.id).first()
+
 
 class Message(models.Model):
     chatroom = models.ForeignKey(ChatRoom, on_delete=models.CASCADE, related_name='messages', null=True, blank=True)

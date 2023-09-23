@@ -1,25 +1,74 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2>{{ chatroom }}</h2>
+<style>
+    .message-box {
+        max-width: 70%;
+        display: inline-block;
+        margin-bottom: 15px;
+    }
 
-<!-- Кнопки для редактирования и удаления чата -->
-<a href="{% url 'edit_chatroom' chatroom.id %}" class="btn btn-warning">Редактировать чат</a>
-<a href="{% url 'delete_chatroom' chatroom.id %}" class="btn btn-danger">Удалить чат</a>
-<br><br>
+    .message-content {
+        padding: 8px 15px;
+        border-radius: 15px;
+        display: inline-block;
+    }
 
-{% for message in messages %}
-    <strong>{{ message.sender.username }}</strong>: {{ message.content }}<br>
-    <small>{{ message.timestamp }}</small>
-    <hr>
-{% endfor %}
+    .message-sent {
+        background-color: #007BFF; /* Primary color */
+        color: white;
+        float: right;
+    }
 
-<h3>Отправить сообщение:</h3>
-<form method="post" action="{% url 'send_message' chatroom.id %}">
-    {% csrf_token %}
-    <label for="content">Введите ваше сообщение:</label>
-    <textarea name="content" required></textarea><br><br>
+    .message-received {
+        background-color: #E9ECEF; /* Light gray */
+        color: black;
+    }
 
-    <input type="submit" value="Отправить">
-</form>
+    .timestamp {
+        margin-top: 5px;
+    }
+</style>
+
+<main class="container mt-5">
+    <h2 class="text-center">{{ chatroom }}</h2>
+
+    <div class="d-flex justify-content-between mb-3">
+        <a href="{% url 'edit_chatroom' chatroom.id %}" class="btn btn-warning">Редактировать чат</a>
+        <a href="{% url 'delete_chatroom' chatroom.id %}" class="btn btn-danger">Удалить чат</a>
+    </div>
+
+    <div class="chat-box p-3 my-4 border rounded bg-white">
+        <ul class="list-unstyled">
+            {% for message in messages %}
+                <li class="mb-3 {% if message.sender == user %}text-end{% endif %}">
+                    {% if message.sender.user_profile.profile_picture %}
+                        <img src="{{ message.sender.user_profile.profile_picture.url }}" alt="" class="rounded-circle" width="32" height="32">
+                    {% else %}
+                        <img src="https://cdn-icons-png.flaticon.com/512/666/666201.png" alt="User Icon" class="rounded-circle" width="32" height="32">
+                    {% endif %}
+
+                    <strong>{{ message.sender.username }}</strong><br>
+                    <div class="message-box">
+                        <span class="message-content {% if message.sender == user %}message-sent{% else %}message-received{% endif %}">
+                            {{ message.content }}
+                        </span>
+                        <div class="text-muted timestamp" style="margin-top: 50px;"><small>{{ message.timestamp }}</small></div>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <form method="post" action="{% url 'send_message' chatroom.id %}">
+        {% csrf_token %}
+        <h3>Отправить сообщение:</h3>
+        <div class="mb-3">
+            <textarea class="form-control" name="content" placeholder="Введите ваше сообщение:" rows="3" required></textarea>
+        </div>
+        <div class="mb-3 text-end">
+            <input type="submit" class="btn btn-primary" value="Отправить">
+        </div>
+    </form>
+</main>
 {% endblock %}

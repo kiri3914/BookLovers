@@ -1,60 +1,57 @@
 {% extends "base.html" %}
 
+{% block title %}
+    Создать групповой чат
+{% endblock title %}
+
 {% block content %}
-<form method="post">
-    {% csrf_token %}
-    <label for="room_name">Название беседы:</label>
-    <input type="text" name="room_name" required><br><br>
+<div class="container mt-5">
+    <h2>Создать групповой чат</h2>
 
-    <label for="users">Выберите участников:</label><br>
-    <input type="text" id="userSearch" placeholder="Поиск пользователей...">
-    <div id="usersGrid">
-        {% for user in users %}
-        <div class="userItem">
-            <input type="checkbox" name="users" value="{{ user.id }}"> {{ user.username }}<br>
+    <form method="post" action="{% url 'create_group_chat' %}">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="room_name" class="form-label">Название чата</label>
+            <input type="text" class="form-control" id="room_name" name="room_name" required>
         </div>
-        {% endfor %}
-    </div>
 
-    <input type="submit" value="Создать беседу">
-</form>
+        <div class="mb-3">
+            <label class="form-label">Добавить пользователей</label>
+            {% for user in users2 %}
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="{{ user.id }}" id="user{{ user.id }}" name="users">
+                <label class="form-check-label" for="user{{ user.id }}">
+                    {{ user.username }}
+                </label>
+            </div>
+            {% endfor %}
+        </div>
 
-<style>
-    #userSearch {
-        padding: 8px;
-        margin-bottom: 10px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-    }
-    #usersGrid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-        gap: 10px;
-    }
-    .userItem {
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-    }
-</style>
+        <div class="mb-3">
+            <nav aria-label="Page navigation">
+                <ul class="pagination">
+                    {% if users2.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ users2.previous_page_number }}">Предыдущая</a>
+                    </li>
+                    {% endif %}
 
-<script>
-    const userSearch = document.getElementById('userSearch');
-    const usersGrid = document.getElementById('usersGrid');
+                    {% for i in users2.paginator.page_range %}
+                    <li class="page-item {% if users2.number == i %}active{% endif %}">
+                        <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+                    </li>
+                    {% endfor %}
 
-    userSearch.addEventListener('input', function() {
-        const query = userSearch.value.toLowerCase();
+                    {% if users2.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ users2.next_page_number }}">Следующая</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
 
-        const userItems = usersGrid.getElementsByClassName('userItem');
-        for (let i = 0; i < userItems.length; i++) {
-            const userItem = userItems[i];
-            const username = userItem.textContent.trim().toLowerCase();
-            if (username.includes(query)) {
-                userItem.style.display = 'block';
-            } else {
-                userItem.style.display = 'none';
-            }
-        }
-    });
-</script>
-{% endblock %}
+        <button type="submit" class="btn btn-primary">Создать чат</button>
+    </form>
+</div>
+{% endblock content %}

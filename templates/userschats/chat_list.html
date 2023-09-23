@@ -5,10 +5,10 @@
 
 {% block content %}
     <div class="container mt-5">
-        <h2>Ваши чаты:</h2>
 
+        <h2 class="mt-4">Ваши групповые чаты:</h2>
         <ul class="list-group mt-4">
-            {% for chatroom in chatrooms %}
+            {% for chatroom in group_chats %}
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     <a href="{% url 'chatroom_detail' chatroom_id=chatroom.id %}">
                         {{ chatroom }}
@@ -16,9 +16,10 @@
                     <span class="badge bg-primary">{{ chatroom.messages.count }}</span>
                 </li>
             {% empty %}
-                <li class="list-group-item">У вас пока нет чатов.</li>
+                <li class="list-group-item">У вас пока нет групповых чатов.</li>
             {% endfor %}
         </ul>
+
         
         <div class="mt-4">
             <a href="{% url 'create_group_chat' %}" class="btn btn-primary">Создать групповой чат</a>
