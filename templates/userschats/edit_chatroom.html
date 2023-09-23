@@ -1,13 +1,18 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2>Edit Chatroom</h2>
 <form method="post">
     {% csrf_token %}
-    <div class="mb-3">
-        <label for="room_name" class="form-label">Room Name</label>
-        <input type="text" class="form-control" id="room_name" name="room_name" value="{{ chatroom.room_name }}" required>
-    </div>
-    <button type="submit" class="btn btn-primary">Save Changes</button>
+    <label for="room_name">Название беседы:</label>
+    <input type="text" name="room_name" value="{{ chatroom.room_name }}" required><br><br>
+
+    <label for="users">Выберите участников:</label><br>
+    {% for user in users %}
+    <input type="checkbox" name="users" value="{{ user.id }}"
+           {% if user in chatroom.participants.all %} checked {% endif %}>
+           {{ user.username }}<br>
+    {% endfor %}
+
+    <input type="submit" value="Обновить беседу">
 </form>
 {% endblock %}

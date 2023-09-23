@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    .message {
+        max-width: 70%;
+        display: inline-block;
+    }
+</style>
+<main class="container mt-5">
+    <h2 class="text-center">Private Chat with {{ other_participant.username }}</h2>
+
+    <div class="chat-box p-3 my-4 border rounded bg-white">
+        <ul class="list-unstyled">
+            {% for message in messages %}
+                <li class="{% if message.sender == user %}text-end{% endif %} mb-3">
+                    <strong>{{ message.sender.username }}</strong><br>
+                    {% if message.sender.user_profile.profile_picture %}
+                        <img src="{{ message.sender.user_profile.profile_picture.url }}" alt="" class="rounded-circle" width="32" height="32">
+                    {% else %}
+                        <img src="https://cdn-icons-png.flaticon.com/512/666/666201.png" alt="User Icon" class="rounded-circle" width="32" height="32">
+                    {% endif %}
+                    <span class="message px-3 py-2 rounded {% if message.sender == user %}bg-primary text-white{% else %}border{% endif %}">
+                        {{ message.content }}
+                    </span>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <form method="post" action="">
+        {% csrf_token %}
+        <div class="mb-3">
+            <textarea class="form-control" name="content" placeholder="Type your message here" rows="3"></textarea>
+        </div>
+        <div class="mb-3 text-end">
+            <input type="submit" class="btn btn-primary" value="Send">
+        </div>
+    </form>
+
+    <a href="{% url 'private_chat_list' %}" class="d-block mt-3 text-center">Back to Private Chats</a>
+</main>
+{% endblock %}
