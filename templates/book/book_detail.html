@@ -17,6 +17,9 @@
         <div class="col-md-8">
             <h2>Описание</h2>
             <p>{{ book.description }}</p>
+            <div class="average-rating">
+                <strong>Средний рейтинг книги:</strong> {{ book.average_rating|floatformat:1 }} из 5
+            </div>
 
             <h2>Автор(ы)</h2>
             <ul>

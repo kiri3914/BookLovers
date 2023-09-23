@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Avg
 from django.urls import reverse
 
 
@@ -40,5 +41,6 @@ class Book(models.Model):
     def __str__(self):
         return self.title
 
-
-
+    @property
+    def average_rating(self):
+        return self.book_reviews.aggregate(Avg('rating'))['rating__avg'] or 0.0
