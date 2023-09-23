@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="activity-feed">
+    {% for activity in activity_list %}
+
+    {% if activity.review.book.cover_image %}
+    <img src="{{ activity.review.book.cover_image.url }}" alt="" width="300">
+    {% endif %}
+    <div class="activity-item">
+        {% if activity.review %}
+        <p><a href="{{ activity.review.user.user_profile.get_absolute_url }}">
+            {{ activity.review.user.username }}</a> Поставил {{ activity.review.rating}}
+        </p>
+        {% endif %}
+
+
+        <p>Views: {{ activity.views }}</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

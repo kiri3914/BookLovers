@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block title %} Login {% endblock title %}  
+
+
+{% block content %}
+<h2>User: {{ user.username }}</h2>
+<p>{{ user.phone_number }}</p>
+
+
+<div class="row">
+    {% for article in article_list %}
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 shadow-lg">
+            {% if article.image_url %}
+            <img src="{{ article.image_url.url }}" class="card-img-top article-image" alt="{{ article.title }}">
+            {% else %}
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Flag_of_Kyrgyzstan.svg/1200px-Flag_of_Kyrgyzstan.svg.png" class="card-img-top article-image" alt="{{ article.title }}">
+            {% endif %}
+
+            <div class="card-body">
+                <h5 class="card-title">
+                    <a href="{% url 'detail_article' article.id %}" class="text-dark">{{ article.title }}</a>
+                </h5>
+                <p class="card-text">{{ article.content|truncatewords:20 }}</p>
+                <p class="card-subtitle text-muted mb-2">by {{ article.author }} | {{ article.date }}</p>
+
+                <p class="tag-container">
+                    <strong>Tags:</strong>
+                    {% for tag in article.tags.all %}
+                        <a href="{% url 'get_article_by_tag' tag.id %}">
+                            <span class="badge bg-primary-gradient">#{{ tag.tag_name }}</span>
+                        </a>
+                    {% endfor %}
+                </p>
+
+            </div>
+
+
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock content %}
