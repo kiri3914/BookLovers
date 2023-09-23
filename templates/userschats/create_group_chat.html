@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block content %}
+<form method="post">
+    {% csrf_token %}
+    <label for="room_name">Название беседы:</label>
+    <input type="text" name="room_name" required><br><br>
+
+    <label for="users">Выберите участников:</label><br>
+    <input type="text" id="userSearch" placeholder="Поиск пользователей...">
+    <div id="usersGrid">
+        {% for user in users %}
+        <div class="userItem">
+            <input type="checkbox" name="users" value="{{ user.id }}"> {{ user.username }}<br>
+        </div>
+        {% endfor %}
+    </div>
+
+    <input type="submit" value="Создать беседу">
+</form>
+
+<style>
+    #userSearch {
+        padding: 8px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+    #usersGrid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 10px;
+    }
+    .userItem {
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+</style>
+
+<script>
+    const userSearch = document.getElementById('userSearch');
+    const usersGrid = document.getElementById('usersGrid');
+
+    userSearch.addEventListener('input', function() {
+        const query = userSearch.value.toLowerCase();
+
+        const userItems = usersGrid.getElementsByClassName('userItem');
+        for (let i = 0; i < userItems.length; i++) {
+            const userItem = userItems[i];
+            const username = userItem.textContent.trim().toLowerCase();
+            if (username.includes(query)) {
+                userItem.style.display = 'block';
+            } else {
+                userItem.style.display = 'none';
+            }
+        }
+    });
+</script>
+{% endblock %}

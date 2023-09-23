@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>{{ chatroom }}</h2>
+
+<!-- Кнопки для редактирования и удаления чата -->
+<a href="{% url 'edit_chatroom' chatroom.id %}" class="btn btn-warning">Редактировать чат</a>
+<a href="{% url 'delete_chatroom' chatroom.id %}" class="btn btn-danger">Удалить чат</a>
+<br><br>
+
+{% for message in messages %}
+    <strong>{{ message.sender.username }}</strong>: {{ message.content }}<br>
+    <small>{{ message.timestamp }}</small>
+    <hr>
+{% endfor %}
+
+<h3>Отправить сообщение:</h3>
+<form method="post" action="{% url 'send_message' chatroom.id %}">
+    {% csrf_token %}
+    <label for="content">Введите ваше сообщение:</label>
+    <textarea name="content" required></textarea><br><br>
+
+    <input type="submit" value="Отправить">
+</form>
+{% endblock %}
