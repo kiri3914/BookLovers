@@ -1,18 +1,31 @@
 {% extends "base.html" %}
 
 {% block content %}
-<form method="post">
-    {% csrf_token %}
-    <label for="room_name">Название беседы:</label>
-    <input type="text" name="room_name" value="{{ chatroom.room_name }}" required><br><br>
+<div class="container mt-5">
+    <h2 class="text-center">Редактирование беседы</h2>
+    <form method="post" class="mt-4">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="room_name" class="form-label">Название беседы:</label>
+            <input type="text" name="room_name" value="{{ chatroom.room_name }}" class="form-control" required>
+        </div>
 
-    <label for="users">Выберите участников:</label><br>
-    {% for user in users %}
-    <input type="checkbox" name="users" value="{{ user.id }}"
-           {% if user in chatroom.participants.all %} checked {% endif %}>
-           {{ user.username }}<br>
-    {% endfor %}
+        <div class="mb-3">
+            <label class="form-label">Выберите участников:</label><br>
+            {% for user in users %}
+                <div class="form-check">
+                    <input type="checkbox" name="users" value="{{ user.id }}"
+                           id="user_{{ user.id }}"
+                           {% if user in chatroom.participants.all %} checked {% endif %}
+                           class="form-check-input">
+                    <label for="user_{{ user.id }}" class="form-check-label">{{ user.username }}</label>
+                </div>
+            {% endfor %}
+        </div>
 
-    <input type="submit" value="Обновить беседу">
-</form>
+        <div class="mb-3 text-center">
+            <button type="submit" class="btn btn-primary">Обновить беседу</button>
+        </div>
+    </form>
+</div>
 {% endblock %}

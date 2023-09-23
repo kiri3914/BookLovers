@@ -29,7 +29,6 @@ def chat_list(request):
     return render(request, 'userschats/chat_list.html', {'private_chats': private_chats, 'group_chats': group_chats})
 
 
-
 @login_required
 def create_private_chat(request, user_id):
     user2 = CustomUser.objects.get(id=user_id)
@@ -58,7 +57,6 @@ def create_group_chat(request):
     users = CustomUser.objects.exclude(id=request.user.id)
     return render(request, 'userschats/create_group_chat.html',
                   {'users': users, 'users2': users_for_page})
-
 
 
 @login_required
@@ -109,6 +107,7 @@ def delete_chatroom(request, chatroom_id):
         return redirect('chat_list')
     return render(request, 'userschats/confirm_delete.html', {'chatroom': chatroom})
 
+
 @login_required
 def private_chat_list(request):
     private_chats = request.user.chatrooms.filter(is_group=False)
@@ -116,7 +115,15 @@ def private_chat_list(request):
     for chat in private_chats:
         other_participant = chat.participants.exclude(id=request.user.id).first()
         chat_data.append({'chat': chat, 'other_participant': other_participant})
-    return render(request, 'userschats/private_chat_list.html', {'chat_data': chat_data})
+
+    all_users = CustomUser.objects.exclude(id=request.user.id)
+
+    existing_chat_partners = [data['other_participant'].id for data in chat_data]
+
+    return render(request, 'userschats/private_chat_list.html',
+                  {'chat_data': chat_data,
+                   'all_users_list': all_users,
+                   'existing_chat_partners': existing_chat_partners})
 
 
 @login_required
@@ -126,11 +133,16 @@ def create_or_open_private_chat(request, user_id):
     if user2 == request.user:
         return HttpResponseForbidden("You cannot create a chat with yourself.")
 
+    # Проверяем наличие чата между данными пользователями
     chatroom = ChatRoom.objects.filter(
         Q(participants=request.user) & Q(participants=user2) & Q(is_group=False)
     ).first()
 
-    if not chatroom:
+    # Если чат существует, то просто перенаправляем пользователя в этот чат
+    if chatroom:
+        return redirect('private_chat_detail', chatroom_id=chatroom.id)
+    else:
+        # Если чата нет, создаем новый
         chatroom = ChatRoom.objects.create(is_group=False)
         chatroom.participants.add(request.user, user2)
 
@@ -150,5 +162,3 @@ def private_chat_detail(request, chatroom_id):
 
     return render(request, 'userschats/private_chat_detail.html',
                   {'chatroom': chatroom, 'other_participant': other_participant, 'messages': messages})
-
-
