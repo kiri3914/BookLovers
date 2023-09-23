@@ -12,8 +12,6 @@ venv/
 # Ignore log files
 *.log
 
-# Ignore auto-generated settings module
-settings.py
 
 # Ignore local development settings (adjust as needed)
 local_settings.py
@@ -45,3 +43,6 @@ secret_key.txt
 
 # Ignore test files
 /tests/
+
+db.sqlite3
+
