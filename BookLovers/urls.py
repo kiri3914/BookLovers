@@ -9,6 +9,7 @@ urlpatterns = [
     path('profiles/', include('apps.profiles.urls')),
     path('auth/', include('apps.accounts.urls')),
     path('books/', include('apps.books.urls')),
+    path('chat/', include('apps.userschats.urls')),
 ]
 
 

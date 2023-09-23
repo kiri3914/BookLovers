@@ -18,7 +18,8 @@
         <nav class="navbar navbar-expand-lg navbar-light">
             <a class="navbar-brand" href="/">Book Lovers</a>
             <a class="navbar-brand" href="{% url 'book_list' %}">Книги</a>
-
+            <a class="navbar-brand" href="{% url 'chat_list' %}">Чаты</a>
+            <a class="navbar-brand" href="{% url 'create_group_chat' %}">Создать чат</a>
                 <ul class="navbar-nav ms-auto d-flex align-items-center">
                     {% if user.is_authenticated %}
                     <li class="nav-item dropdown">
@@ -34,7 +35,7 @@
                         </a>
                         <div class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                             <a class="dropdown-item" href="{% url 'my_profile' %}">Профиль</a>
-                            <a class="dropdown-item" href="{% url 'friends_list' %}">Друзя</a>
+                            <a class="dropdown-item" href="{% url 'friends_list' %}">Друзья</a>
                             <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
                         </div>
                     </li>
