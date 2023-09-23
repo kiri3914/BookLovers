@@ -59,3 +59,5 @@ def rejected_friend_request(request, user_id):
     friend_request.status = 'rejected'
     friend_request.save()
     return redirect('friends_list')
+
+
