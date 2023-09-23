@@ -17,9 +17,6 @@
         <div class="col-md-8">
             <h2>Описание</h2>
             <p>{{ book.description }}</p>
-            <div class="average-rating">
-                <strong>Средний рейтинг книги:</strong> {{ book.average_rating|floatformat:1 }} из 5
-            </div>
 
             <h2>Автор(ы)</h2>
             <ul>
@@ -34,6 +31,9 @@
                 <li>{{ genre.name }}</li>
                 {% endfor %}
             </ul>
+            <div class="average-rating">
+                <strong>Средний рейтинг книги:</strong> {{ book.average_rating|floatformat:2 }} из 5
+            </div>
         </div>
         {% if messages %}
         <div class="alert alert-success">
@@ -66,11 +66,19 @@
     <div class="card-body">
         <h6 class="card-subtitle mb-2 text-muted">Рейтинг: {{ review.rating }} / 5</h6>
         <p class="card-text">{{ review.text }}</p>
+        {% if review.user == request.user %}
+            <a href="{% url 'edit_review' review.book.id %}" class="btn btn-primary">Редактировать свой отзыв</a>
+            <form method="post" action="{% url 'delete_review' book_id=book.id pk=review.id %}" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Удалить свой отзыв</button>
+            </form>
+        {% endif %}
     </div>
     <div class="card-footer text-muted">
         {{ review.created_at }}
     </div>
 </div>
 {% endfor %}
+
 
 {% endblock content %}
