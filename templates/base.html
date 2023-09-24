@@ -11,6 +11,43 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'style.css' %}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/5.0.0-beta1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/5.0.0-beta1/js/bootstrap.min.js" integrity="sha384-pzjw8f+ua7Kw1TIq0v8FqFjcJ6pajs/rfdfs3SO+kD5tr5Szkbe5CkXCvrDTC4z4" crossorigin="anonymous"></script>
+<script>
+$(document).ready(function() {
+    // При нажатии на кнопку "Поделиться книгой"
+    $(".share-book").on('click', function(){
+        const bookId = $(this).data('book-id');
+        $("#book_id").val(bookId);
+        $("#shareBookModal").modal('show');
+    });
+
+    // При отправке формы поделиться книгой
+    $("#share-book-form").on('submit', function(e){
+        e.preventDefault();
+
+        $.ajax({
+            url: $(this).attr('action'),
+            method: 'POST',
+            data: $(this).serialize(),
+            success: function(response) {
+                if (response.status === "success") {
+                    // Скрываем форму и отображаем сообщение об успехе
+                    $("#share-book-form").hide();
+                    $("#success-message").show();
+                } else {
+                    alert('Произошла ошибка при попытке поделиться книгой.');
+                }
+            },
+            error: function() {
+                alert('Произошла ошибка на сервере. Попробуйте позже.');
+            }
+        });
+    });
+});
+</script>
+
 </head>
 
 <body>
@@ -51,10 +88,6 @@
                     {% endif %}
                 </ul>
 </header>
-
-{% block head %}
-
-{% endblock %}
 
 <main class="container mt-5">
     {% block content %}

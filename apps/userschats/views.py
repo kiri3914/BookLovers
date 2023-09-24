@@ -48,6 +48,7 @@ def create_group_chat(request):
         room_name = request.POST.get('room_name')
         user_ids = request.POST.getlist('users')
         chatroom = ChatRoom.objects.create(is_group=True, room_name=room_name)
+        chatroom.author = request.user
         chatroom.participants.add(request.user)
         for user_id in user_ids:
             user = CustomUser.objects.get(id=user_id)
@@ -62,8 +63,6 @@ def create_group_chat(request):
 @login_required
 def send_message(request, chatroom_id):
     chatroom = ChatRoom.objects.get(id=chatroom_id)
-    if request.user not in chatroom.participants.all():
-        return HttpResponseForbidden("You don't have permission to access this chat.")
 
     if request.method == "POST":
         content = request.POST.get('content')
@@ -82,17 +81,24 @@ def chatroom_detail(request, chatroom_id):
 
 @login_required
 def edit_group_chat(request, chatroom_id):
+    # Получаем чат или возвращаем 404 ошибку
     chatroom = get_object_or_404(ChatRoom, id=chatroom_id)
+    # Если это POST-запрос, обновляем данные чата
     if request.method == "POST":
-        room_name = request.POST.get('room_name')
-        user_ids = request.POST.getlist('users')
-        chatroom.room_name = room_name
-        chatroom.participants.clear()
-        for user_id in user_ids:
-            user = CustomUser.objects.get(id=user_id)
-            chatroom.participants.add(user)
-        chatroom.save()
-        return redirect('chatroom_detail', chatroom_id=chatroom.id)
+        if request.user.id != chatroom.author.id:
+            return HttpResponseForbidden("You don't have permission to edit this chat.")
+        else:
+            room_name = request.POST.get('room_name')
+            user_ids = request.POST.getlist('users')
+            chatroom.room_name = room_name
+            chatroom.participants.clear()
+            for user_id in user_ids:
+                user = CustomUser.objects.get(id=user_id)
+                chatroom.participants.add(user)
+            chatroom.save()
+            return redirect('chatroom_detail', chatroom_id=chatroom.id)
+
+    # Получаем список всех пользователей, кроме текущего
     users = CustomUser.objects.exclude(id=request.user.id)
     return render(request, 'userschats/edit_chatroom.html', {'users': users, 'chatroom': chatroom})
 
@@ -100,11 +106,14 @@ def edit_group_chat(request, chatroom_id):
 @login_required
 def delete_chatroom(request, chatroom_id):
     chatroom = get_object_or_404(ChatRoom, id=chatroom_id)
-    if request.user not in chatroom.participants.all():
-        return HttpResponseForbidden("You don't have permission to delete this chat.")
+
     if request.method == "POST":
-        chatroom.delete()
-        return redirect('chat_list')
+        if request.user.id != chatroom.author.id:
+            return HttpResponseForbidden("You don't have permission to delete this chat.")
+        else:
+            chatroom.delete()
+            return redirect('chat_list')
+
     return render(request, 'userschats/confirm_delete.html', {'chatroom': chatroom})
 
 
