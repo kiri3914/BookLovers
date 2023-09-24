@@ -34,7 +34,9 @@ def create_private_chat(request, user_id):
     user2 = CustomUser.objects.get(id=user_id)
     chatroom = ChatRoom.objects.create(is_group=False)
     chatroom.participants.add(request.user, user2)
+    chatroom.room_name = user2.username
     chatroom.save()
+
     return redirect('chatroom_detail', chatroom_id=chatroom.id)
 
 
@@ -85,18 +87,15 @@ def edit_group_chat(request, chatroom_id):
     chatroom = get_object_or_404(ChatRoom, id=chatroom_id)
     # Если это POST-запрос, обновляем данные чата
     if request.method == "POST":
-        if request.user.id != chatroom.author.id:
-            return HttpResponseForbidden("You don't have permission to edit this chat.")
-        else:
-            room_name = request.POST.get('room_name')
-            user_ids = request.POST.getlist('users')
-            chatroom.room_name = room_name
-            chatroom.participants.clear()
-            for user_id in user_ids:
-                user = CustomUser.objects.get(id=user_id)
-                chatroom.participants.add(user)
-            chatroom.save()
-            return redirect('chatroom_detail', chatroom_id=chatroom.id)
+        room_name = request.POST.get('room_name')
+        user_ids = request.POST.getlist('users')
+        chatroom.room_name = room_name
+        chatroom.participants.clear()
+        for user_id in user_ids:
+            user = CustomUser.objects.get(id=user_id)
+            chatroom.participants.add(user)
+        chatroom.save()
+        return redirect('chatroom_detail', chatroom_id=chatroom.id)
 
     # Получаем список всех пользователей, кроме текущего
     users = CustomUser.objects.exclude(id=request.user.id)
@@ -108,11 +107,8 @@ def delete_chatroom(request, chatroom_id):
     chatroom = get_object_or_404(ChatRoom, id=chatroom_id)
 
     if request.method == "POST":
-        if request.user.id != chatroom.author.id:
-            return HttpResponseForbidden("You don't have permission to delete this chat.")
-        else:
-            chatroom.delete()
-            return redirect('chat_list')
+        chatroom.delete()
+        return redirect('chat_list')
 
     return render(request, 'userschats/confirm_delete.html', {'chatroom': chatroom})
 
@@ -154,6 +150,9 @@ def create_or_open_private_chat(request, user_id):
         # Если чата нет, создаем новый
         chatroom = ChatRoom.objects.create(is_group=False)
         chatroom.participants.add(request.user, user2)
+        chatroom_name = str(user2.username)
+        chatroom.room_name = chatroom_name
+        chatroom.save()
 
     return redirect('private_chat_detail', chatroom_id=chatroom.id)
 

@@ -4,8 +4,8 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
-from django.urls import reverse_lazy, reverse
-from .models import Book, Author, Genre
+from django.urls import reverse_lazy
+from .models import Book
 from ..userschats.models import Message
 from ..activity.froms import ReviewForm
 from ..activity.models import Review
@@ -23,12 +23,11 @@ def share_book_in_chat(request):
             chatroom = get_object_or_404(ChatRoom, id=chat_id)
             # Создайте сообщение и отправьте книгу в выбранный чат
             # Здесь предполагается, что у вас есть модель Message с соответствующими полями
-            Message.objects.create(chatroom=chatroom, sender=request.user, content=f"Посмотрите на эту книгу: {book.title}", book_shared=book)
+            Message.objects.create(chatroom=chatroom, sender=request.user,
+                                   content=f"Посмотрите на эту книгу: {book.title}", book_shared=book)
 
         # Добавьте параметр в URL, чтобы указать успешное действие
         return redirect(f"{request.path_info}?success=true")
-
-
 
 
 class BookListView(View):
