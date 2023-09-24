@@ -5,11 +5,14 @@
     <h2 class="text-center">Редактирование беседы</h2>
     <form method="post" class="mt-4">
         {% csrf_token %}
+        <p>Автор беседы: {{ chatroom.author }}</p>
         <div class="mb-3">
             <label for="room_name" class="form-label">Название беседы:</label>
             <input type="text" name="room_name" value="{{ chatroom.room_name }}" class="form-control" required>
         </div>
-
+        <div class="mb-3 text-center">
+            <button type="submit" class="btn btn-primary">Обновить беседу</button>
+        </div>
         <div class="mb-3">
             <label class="form-label">Выберите участников:</label><br>
             {% for user in users %}
@@ -21,10 +24,6 @@
                     <label for="user_{{ user.id }}" class="form-check-label">{{ user.username }}</label>
                 </div>
             {% endfor %}
-        </div>
-
-        <div class="mb-3 text-center">
-            <button type="submit" class="btn btn-primary">Обновить беседу</button>
         </div>
     </form>
 </div>

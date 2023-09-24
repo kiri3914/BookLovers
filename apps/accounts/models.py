@@ -25,10 +25,10 @@ class CustomUser(AbstractUser):
     bio = models.TextField(blank=True)
     phone_number = models.CharField(max_length=15, unique=True)
     birthdate = models.DateField(blank=True, null=True)
-    username = models.CharField(max_length=50)
+    username = models.CharField(max_length=50, unique=True)
 
     objects = CustomUserManager()
     USERNAME_FIELD = 'phone_number'
 
     def __str__(self):
-        return self.first_name
+        return self.username
