@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Q
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, HttpResponseForbidden
 from django.core.paginator import Paginator
@@ -77,15 +78,18 @@ def send_message(request, chatroom_id):
 @login_required
 def chatroom_detail(request, chatroom_id):
     chatroom = ChatRoom.objects.get(id=chatroom_id)
-    messages = chatroom.messages.all().order_by('timestamp')
-    return render(request, 'userschats/chatroom_detail.html', {'chatroom': chatroom, 'messages': messages})
+    message_list = chatroom.messages.all().order_by('timestamp')
+    return render(request, 'userschats/chatroom_detail.html', {'chatroom': chatroom, 'message_list': message_list})
 
 
 @login_required
 def edit_group_chat(request, chatroom_id):
     # Получаем чат или возвращаем 404 ошибку
     chatroom = get_object_or_404(ChatRoom, id=chatroom_id)
-    # Если это POST-запрос, обновляем данные чата
+    if request.user != chatroom.author:
+        messages.error(request, 'У вас нет прав на редактирование')
+        return redirect('chatroom_detail', chatroom_id=chatroom.id)
+
     if request.method == "POST":
         room_name = request.POST.get('room_name')
         user_ids = request.POST.getlist('users')
@@ -105,7 +109,9 @@ def edit_group_chat(request, chatroom_id):
 @login_required
 def delete_chatroom(request, chatroom_id):
     chatroom = get_object_or_404(ChatRoom, id=chatroom_id)
-
+    if request.user != chatroom.author:
+        messages.error(request, 'У вас нет прав на удаление')
+        return redirect('chatroom_detail', chatroom_id=chatroom.id)
     if request.method == "POST":
         chatroom.delete()
         return redirect('chat_list')
