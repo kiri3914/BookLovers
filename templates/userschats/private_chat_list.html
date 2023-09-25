@@ -5,10 +5,10 @@
     <h2 class="text-center mb-4">Личные чаты</h2>
 
     <!-- Форма поиска пользователей -->
-    <form id="user-search-form">
+    <form id="user-search-form" method="get" action="{% url 'search_users' %}">
         <div class="input-group mb-4 shadow">
             <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
-            <input type="text" name="search" placeholder="Искать пользователя..." class="form-control">
+            <input type="text" name="search" value="{{ search_query }}" placeholder="Искать пользователя..." class="form-control">
             <div class="input-group-append">
                 <button class="btn btn-primary" type="submit">Поиск</button>
             </div>
@@ -16,7 +16,18 @@
     </form>
 
     <!-- Блок для результатов поиска -->
-    <div id="search-results"></div>
+    <div id="search-results">
+        {% for user in users %}
+            <div class="card mb-3 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">{{ user.username }}</h5>
+                    <a href="{% url 'create_or_open_private_chat' user_id=user.id %}" class="btn btn-sm btn-outline-success float-end">Начать чат</a>
+                </div>
+            </div>
+        {% empty %}
+            <p>Пользователи не найдены</p>
+        {% endfor %}
+    </div>
 
     <!-- Список существующих личных чатов -->
     <h4 class="mb-3">Мои личные чаты</h4>
@@ -35,7 +46,7 @@
 
     <!-- Список всех пользователей -->
     <h4 class="mb-3">Все пользователи</h4>
-<div>
+    <div>
         {% for user in all_users_list %}
             {% if user.id not in existing_chat_partners %}
                 <div class="card mb-3 shadow-sm">

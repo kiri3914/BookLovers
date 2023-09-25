@@ -8,6 +8,13 @@ from .models import ChatRoom, Message
 from apps.accounts.models import CustomUser
 
 
+def search_users(request):
+    search_query = request.GET.get('search', '')
+    users = CustomUser.objects.filter(username__icontains=search_query)
+    context = {'users': users, 'search_query': search_query}
+    return render(request, 'userschats/private_chat_list.html', context)
+
+
 def get_users(request):
     page = int(request.GET.get('page', 1))
     search_query = request.GET.get('search', '')
@@ -109,9 +116,6 @@ def edit_group_chat(request, chatroom_id):
 @login_required
 def delete_chatroom(request, chatroom_id):
     chatroom = get_object_or_404(ChatRoom, id=chatroom_id)
-    if request.user != chatroom.author:
-        messages.error(request, 'У вас нет прав на удаление')
-        return redirect('chatroom_detail', chatroom_id=chatroom.id)
     if request.method == "POST":
         chatroom.delete()
         return redirect('chat_list')
@@ -135,6 +139,17 @@ def private_chat_list(request):
                   {'chat_data': chat_data,
                    'all_users_list': all_users,
                    'existing_chat_partners': existing_chat_partners})
+
+
+@login_required
+def search_private_users(request):
+    query = request.GET.get('search', '').strip()
+    if query:
+        matching_users = CustomUser.objects.filter(username__icontains=query).exclude(id=request.user.id)[
+                         :10]  # Ограничиваем результаты первыми 10
+        users_list = [{'id': user.id, 'username': user.username} for user in matching_users]
+        return JsonResponse({'users': users_list})
+    return JsonResponse({'users': []})
 
 
 @login_required
