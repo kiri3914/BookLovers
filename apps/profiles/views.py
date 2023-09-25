@@ -2,8 +2,12 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 
 from .forms import UserForm
+from django.contrib import messages
+
 from .models import UserProfile, Friend
 from ..accounts.models import CustomUser
+
+from django.db.models import Q
 
 
 @login_required
@@ -16,9 +20,15 @@ def my_profile(request):
     return render(request, 'profile/my_profile.html', context)
 
 
+@login_required
 def profile_detail(request, profile_id):
     user_profile = get_object_or_404(UserProfile, id=profile_id)
-    context = {'user_profile': user_profile}
+    if user_profile == request.user.user_profile:
+        return redirect ('my_profile')
+    # Получить список друзей пользователя
+    friends = Friend.objects.filter(user=user_profile.user, status='accepted')
+    
+    context = {'user_profile': user_profile, 'friends': friends}
     return render(request, 'profile/profile_detail.html', context)
 
 
@@ -65,11 +75,14 @@ def edit_profile(request):
 
     return render(request, 'profile/edit_profile.html', context)
 
-
 def send_friend_request(request, user_id):
     user = request.user
     friend = get_object_or_404(CustomUser, id=user_id)
-    Friend.objects.get_or_create(friend=friend, user=user)
+    is_friend = Friend.objects.filter(Q(user=user, friend=friend)|Q(user=friend,friend=user),status='accepted').exists()
+    if is_friend:
+        messages.error(request,'Вы уже в списке друзей')
+    else:
+        Friend.objects.get_or_create(friend=friend, user=user)
     return redirect('profile_detail', profile_id=friend.user_profile.id)
 
 
