@@ -1,4 +1,5 @@
 {% load static %}
+{% load custom_tags %}
 <!DOCTYPE html>
 <html>
 
@@ -63,16 +64,21 @@ $(document).ready(function() {
                 <ul class="navbar-nav ms-auto d-flex align-items-center">
                     {% if user.is_authenticated %}
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
-                           data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            {% if user.user_profile.profile_picture %}
-                            <img src="{{ user.user_profile.profile_picture.url }}" alt="" width="36" height="36" style="border-radius: 15px;">
-                            {% else %}
-                            <img src="https://cdn-icons-png.flaticon.com/512/666/666201.png" alt="User Icon" width="32"
-                                 height="32">
-                            {% endif %}
-                            {{ user.username }}
-                        </a>
+                            {% with friend_request_count=user|has_friend_requests %}
+                                <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                                   data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    {% if user.user_profile.profile_picture %}
+                                    <img src="{{ user.user_profile.profile_picture.url }}" alt="" width="36" height="36" style="border-radius: 15px;">
+                                    {% else %}
+                                    <img src="https://cdn-icons-png.flaticon.com/512/666/666201.png" alt="User Icon" width="32"
+                                         height="32">
+                                    {% endif %}
+                                    {{ user.username }}
+                                    {% if friend_request_count > 0 %}
+                                        <span class="badge bg-danger rounded-circle">{{ friend_request_count }}</span>
+                                    {% endif %}
+                                </a>
+                            {% endwith %}
                         <div class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                             <a class="dropdown-item" href="{% url 'my_profile' %}">Профиль</a>
                             <a class="dropdown-item" href="{% url 'friends_list' %}">Друзья</a>
@@ -88,6 +94,8 @@ $(document).ready(function() {
                     </li>
                     {% endif %}
                 </ul>
+        </nav>
+    </div>
     </header>
 <main class="container mt-5">
     {% block content %}

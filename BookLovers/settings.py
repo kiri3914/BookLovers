@@ -18,6 +18,7 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -31,7 +32,6 @@ INSTALLED_APPS = [
     'apps.books',
     'apps.profiles',
     'apps.userschats',
-
 
     # Installed apps
     'crispy_bootstrap5',
@@ -117,8 +117,4 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-GEOIP_PATH = BASE_DIR / 'geoip'

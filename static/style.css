@@ -1,0 +1,61 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+}
+
+.card:hover {
+    transform: translateY(-10px);
+    transition: 0.3s;
+}
+
+.badge, .btn-primary-gradient {
+    background: linear-gradient(90deg, rgba(94,28,68,1) 0%, rgba(200,104,114,1) 100%);
+    border: none;
+}
+
+.btn-primary-gradient:hover {
+    background: linear-gradient(90deg, rgba(200,104,114,1) 0%, rgba(94,28,68,1) 100%);
+    transition: 0.3s;
+}
+
+.shadow-lg {
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.article-image {
+    height: 200px;
+    object-fit: cover;
+}
+
+.tag-container {
+    margin-bottom: 0;
+}
+
+/* Стилизация контейнера для сообщений */
+ul.messages {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* Стилизация отдельного сообщения */
+ul.messages li {
+    margin: 5px 0;
+    padding: 10px;
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+    color: #333;
+}
+
+/* Стилизация сообщений с разными классами (например, success, error) */
+ul.messages li.success {
+    background-color: #dff0d8;
+    border-color: #d0e9c6;
+    color: #3c763d;
+}
+
+ul.messages li.error {
+    background-color: #f2dede;
+    border-color: #ebccd1;
+    color: #a94442;
+}
