@@ -51,8 +51,8 @@
             {% if user.id not in existing_chat_partners %}
                 <div class="card mb-3 shadow-sm">
                     <div class="card-body">
-                        <a href="{{user.user_profile.get_absolute_url }}"> 
-                        {{ user.username }}</a>
+                        <a href="{{ user.user_profile.get_absolute_url }}">
+                        <h5 class="card-title">{{ user.username }}</h5>
                         <a href="{% url 'create_or_open_private_chat' user_id=user.id %}" class="btn btn-sm btn-outline-success float-end">Начать чат</a>
                     </div>
                 </div>

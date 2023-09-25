@@ -34,10 +34,10 @@
         <ul>
             {% for friend in user.user_profile.get_friends %}
              {% if friend.user == user %}
-             <a href="{{friend.friend.user_profile.get_absolute_url }}">
+            <a href="{{ friend.user.user_profile.get_absolute_url }}">
                 <li>{{ friend.friend.username }} </li></a>
             {% else %}
-            <a href="{{friend.user.user_profile.get_absolute_url }}">
+                <a href="{{ friend.user.user_profile.get_absolute_url }}">
             <li>{{ friend.user.username }}</li></a>
             {% endif %}
             {% endfor %}
