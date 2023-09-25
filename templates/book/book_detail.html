@@ -62,7 +62,8 @@
 {% for review in review_list %}
 <div class="card mb-3">
     <div class="card-header">
-        <h5 class="card-title">{{ review.user.username }}</h5>
+        <a href="{{ review.user.user_profile.get_absolute_url }}">
+        {{ review.user.username }}</a>
     </div>
     <div class="card-body">
         <h6 class="card-subtitle mb-2 text-muted">Рейтинг: {{ review.rating }} / 5</h6>

@@ -6,6 +6,7 @@ from apps.accounts.models import CustomUser
 from apps.books.models import Genre
 
 
+
 class UserProfile(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE,
                                 related_name='user_profile')
