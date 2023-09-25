@@ -27,7 +27,8 @@ class UserProfile(models.Model):
         # friends = Friend.objects.filter(
         #     Q(friend=user, status='accepted')
         #     | Q(user=user, status='accepted'))
-        return friends_added_by_user | friends_added_user
+        friends = (friends_added_by_user | friends_added_user).distinct()
+        return friends
 
 
 class Friend(models.Model):
