@@ -17,6 +17,7 @@ idna==3.4
 maxminddb==2.4.0
 multidict==6.0.4
 Pillow==10.0.1
+psycopg2-binary==2.9.7
 python-dateutil==2.8.2
 python-dotenv==1.0.0
 requests==2.31.0
