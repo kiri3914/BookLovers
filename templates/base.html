@@ -57,6 +57,7 @@ $(document).ready(function() {
         <nav class="navbar navbar-expand-lg navbar-light">
             <a class="navbar-brand" href="/">Book Lovers</a>
             <a class="navbar-brand" href="{% url 'book_list' %}">Книги</a>
+            <a href="{% url 'add_book' %}" class="navbar-brand" >Добавить книгу</a>
             <a class="navbar-brand" href="{% url 'chat_list' %}">Чаты</a><!-- Добавлена кнопка для личных сообщений -->
             <a class="navbar-brand" href="{% url 'create_group_chat' %}">Создать чат</a>
             <a class="navbar-brand" href="{% url 'private_chat_list' %}">Личные сообщения</a>

@@ -22,7 +22,7 @@
             </a>
                 {% endif %}
             <form method="post" action="{% url 'accept_friend_request' user_id=request.user.id %}">
-                {% csrf_token %}
+                {% csrf_token %}/home/ibragim/python_mor/django/ITCvisit
                 <button type="submit" class="btn btn-success btn-sm my-1 mx-1">Принять</button>
             </form>
             <form method="post" action="{% url 'rejected_friend_request' user_id=request.user.id %}">
