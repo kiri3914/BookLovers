@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.db.models import Q
+from django.db.models import Q, Count
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, HttpResponseForbidden
@@ -155,18 +155,27 @@ def search_private_users(request):
 @login_required
 def create_or_open_private_chat(request, user_id):
     user2 = get_object_or_404(CustomUser, id=user_id)
+    user = request.user
 
     if user2 == request.user:
         return HttpResponseForbidden("You cannot create a chat with yourself.")
 
     # Проверяем наличие чата между данными пользователями
-    chatroom = ChatRoom.objects.filter(
-        Q(participants=request.user) & Q(participants=user2) & Q(is_group=False)
+
+    chatroom = ChatRoom.objects.annotate(
+        user_count=Count('participants')
+    ).filter(
+        participants=user
+    ).filter(
+        participants=user2
+    ).filter(
+        is_group=False
+    ).filter(
+        user_count=2  # Убедитесь, что в чате ровно 2 пользователя
     ).first()
 
-    # Если чат существует, то просто перенаправляем пользователя в этот чат
     if chatroom:
-        return redirect('private_chat_detail', chatroom_id=chatroom.id)
+        return redirect('chatroom_detail', chatroom_id=chatroom.id)
     else:
         # Если чата нет, создаем новый
         chatroom = ChatRoom.objects.create(is_group=False)
