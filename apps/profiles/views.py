@@ -14,22 +14,29 @@ from django.db.models import Q
 def my_profile(request):
     user_profile = UserProfile.objects.get(user=request.user)
 
+
     context = {
         'user_profile': user_profile
+
     }
     return render(request, 'profile/my_profile.html', context)
+
 
 
 @login_required
 def profile_detail(request, profile_id):
     user_profile = get_object_or_404(UserProfile, id=profile_id)
     if user_profile == request.user.user_profile:
-        return redirect ('my_profile')
-    # Получить список друзей пользователя
-    friends = Friend.objects.filter(user=user_profile.user, status='accepted')
-    
+        return redirect('my_profile')
+
+    friends_added_by_user = Friend.objects.filter(Q(user=request.user, status='accepted'))
+    friends_added_user = Friend.objects.filter(Q(friend=request.user, status='accepted'))
+    friends = (friends_added_by_user | friends_added_user).distinct()
+    print(friends)
     context = {'user_profile': user_profile, 'friends': friends}
+    print(context)
     return render(request, 'profile/profile_detail.html', context)
+
 
 
 @login_required

@@ -18,26 +18,27 @@
              {% if messages %}
               <ul class="messages">
                   {% for message in messages %}
-                      <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                      <li>{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
                   {% endfor %}
               </ul>
           {% endif %}
             <!-- Отображаем кнопку "Добавить в друзья" только если пользователь не является друзьями -->
-            <p>
-                {% if not user_profile.user == request.user %}
-                    {% if not user_profile.user in user_friends %}
-                        <a href="{% url 'send_friend_request' user_profile.user.id %}" class="btn btn-success" type="submit">
-                            + Добавить в друзья
-                        </a>
-                    {% endif %}
-                {% endif %}
-            </p>
+{% if not user_profile.user == request.user.user_profile %}
+    {% if user_profile.user not in friends  %}
 
-            <!-- Добавьте кнопку "Начать чат" -->
-            <p><a href="{% url 'create_or_open_private_chat' user_id=user_profile.user.id %}" class="btn btn-outline-success">
-                Начать чат
+        <!-- Пользователи не являются друзьями, отображаем кнопку "+ Добавить в друзья" -->
+        <a href="{% url 'send_friend_request' user_profile.user.id %}" class="btn btn-success" type="submit">
+            + Добавить в друзья
+        </a>
+            {% else %}
+        <!-- Пользователи являются друзьями, отображаем кнопку "Начать чат" -->
+        <a href="{% url 'create_or_open_private_chat' user_id=user_profile.user.id %}" class="btn btn-outline-success">
+            Начать чат
+        </a>
 
-            </a></p>
+    {% endif %}
+
+{% endif %}
 
             <p><strong>Email:</strong> {{ user_profile.user.email }}</p>
             <p><strong>Имя:</strong> {{ user_profile.user.first_name }}</p>
