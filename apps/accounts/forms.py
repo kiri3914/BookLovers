@@ -27,3 +27,7 @@ class CustomUserChangeForm(UserChangeForm):
             'bio': forms.Textarea(attrs={'class': 'form-control'}),
             'birthdate': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
         }
+
+
+class UserSearchForm(forms.Form):
+    search_query = forms.CharField(max_length=100, label='Поиск пользователя')

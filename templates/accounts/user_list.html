@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %} Список пользователей {% endblock title %}
+
+{% block content %}
+<div class="container">
+    <h2 class="mb-4">Список пользователей</h2>
+    <form method="GET" action="{% url 'user_list' %}">
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Поиск</button>
+    </form>
+    <ul class="list-group mt-3">
+        {% for user in users %}
+        <li class="list-group-item">
+            <a href="{% url 'profile_detail' user.id %}">{{ user.username }}</a>
+        </li>
+        {% empty %}
+        <li class="list-group-item">Пользователи не найдены.</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock content %}
