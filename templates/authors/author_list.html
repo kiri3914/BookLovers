@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<head>
+    <title>Список авторов</title>
+</head>
+<body>
+    <h1>Список авторов</h1>
+
+    <ul>
+        {% for author in authors %}
+            <li>
+                <strong><a href="{% url 'author_detail' author.pk %}">{{ author.first_name }} {{ author.last_name }}</a></strong><br>
+
+        {% endfor %}
+    </ul>
+
+   <a href="{% url 'add_author' %}" class="btn btn-primary mt-3">Добавить автора</a>
+</body>
+
+{% endblock content %}
