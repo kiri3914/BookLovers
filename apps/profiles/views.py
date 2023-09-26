@@ -29,12 +29,15 @@ def profile_detail(request, profile_id):
     if user_profile == request.user.user_profile:
         return redirect('my_profile')
 
-    friends_added_by_user = Friend.objects.filter(Q(user=request.user, status='accepted'))
-    friends_added_user = Friend.objects.filter(Q(friend=request.user, status='accepted'))
-    friends = (friends_added_by_user | friends_added_user).distinct()
-    print(friends)
-    context = {'user_profile': user_profile, 'friends': friends}
-    print(context)
+    # Получить список друзей пользователя
+    friends = Friend.objects.filter(user=user_profile.user, status='accepted')
+
+    user = request.user
+    friend = user_profile.user
+    is_friend = Friend.objects.filter(Q(user=user, friend=friend) | Q(user=friend, friend=user)).first()
+
+    context = {'user_profile': user_profile, 'friends': friends, 'is_friend': is_friend}
+
     return render(request, 'profile/profile_detail.html', context)
 
 
@@ -57,7 +60,6 @@ def edit_profile(request):
                 user.user_profile.profile_picture = request.FILES['profile_picture']
             user.save()
             user.user_profile.save()
-
 
             # Обновляем любимые жанры
             user.user_profile.favorite_genres.set(form.cleaned_data['favorite_genres'])
@@ -82,14 +84,34 @@ def edit_profile(request):
 
     return render(request, 'profile/edit_profile.html', context)
 
+
+@login_required
 def send_friend_request(request, user_id):
     user = request.user
     friend = get_object_or_404(CustomUser, id=user_id)
-    is_friend = Friend.objects.filter(Q(user=user, friend=friend)|Q(user=friend,friend=user),status='accepted').exists()
+    is_friend = Friend.objects.filter(Q(user=user, friend=friend) | Q(user=friend, friend=user),
+                                      status='accepted').exists()
     if is_friend:
-        messages.error(request,'Вы уже в списке друзей')
+        messages.error(request, 'Вы уже в списке друзей')
     else:
         Friend.objects.get_or_create(friend=friend, user=user)
+        messages.success(request, 'Вы успешно отправили запрос на дружбу')
+    return redirect('profile_detail', profile_id=friend.user_profile.id)
+
+
+@login_required
+def delete_friend(request, user_id):
+    user = request.user
+    friend = get_object_or_404(CustomUser, id=user_id)
+    obj = Friend.objects.filter(Q(user=user, friend=friend) | Q(user=friend, friend=user)).first()
+    if obj:
+        obj.delete()
+        if obj.status == 'accepted':
+            messages.success(request, 'Вы успешно удалили пользователя из списке друзей')
+        else:
+            messages.success(request, 'Вы успешно отменили запрос на дружбу')
+    else:
+        messages.error(request, 'Пользователь не найден в списке друзей')
     return redirect('profile_detail', profile_id=friend.user_profile.id)
 
 

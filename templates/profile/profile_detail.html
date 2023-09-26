@@ -6,71 +6,116 @@
 <div class="container">
     <div class="row">
         <div class="col-md-6">
-            <h2>Профиль пользователя: {{ user_profile.user.username }}</h2>
-             {% if user_profile.profile_picture %}
-            <img src="{{ user_profile.profile_picture.url }}" alt="" width="150" height="200">
-            {% else %}
-            <img src="https://img.wattpad.com/8f19b412f2223afe4288ed0904120a48b7a38ce1/68747470733a2f2f73332e616d617a6f6e6177732е636f6м2f776174747061642d6d656469612d736572766963652f53746f7279496d6167652f5650722d38464e2d744a515349673d3d2d3234323931353831302e313434336539633161633764383437652e6a7067"
-                 alt="" width="200" height="200">
-            {% endif %}
-            <br>
-            <br>
-             {% if messages %}
-              <ul class="messages">
-                  {% for message in messages %}
-                      <li>{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-                  {% endfor %}
-              </ul>
-          {% endif %}
-            <!-- Отображаем кнопку "Добавить в друзья" только если пользователь не является друзьями -->
-{% if not user_profile.user == request.user.user_profile %}
-    {% if user_profile.user not in friends  %}
+            <h2 class="mb-4">Профиль пользователя: {{ user_profile.user.username }}</h2>
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-center">
+                        {% if user_profile.profile_picture %}
+                        <img src="{{ user_profile.profile_picture.url }}" alt="" class="img-fluid rounded-circle"
+                             width="150" height="150">
+                        {% else %}
+                        <img src="https://img.wattpad.com/8f19b412f2223afe4288ed0904120a48b7a38ce1/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f776174747061642d6d656469612d736572766963652f53746f7279496d6167652f5650722d38464e2d744a515349673d3d2d3234323931353831302e313434336539633161633764383437652e6a7067"
 
-        <!-- Пользователи не являются друзьями, отображаем кнопку "+ Добавить в друзья" -->
-        <a href="{% url 'send_friend_request' user_profile.user.id %}" class="btn btn-success" type="submit">
-            + Добавить в друзья
-        </a>
-            {% else %}
-        <!-- Пользователи являются друзьями, отображаем кнопку "Начать чат" -->
-        <a href="{% url 'create_or_open_private_chat' user_id=user_profile.user.id %}" class="btn btn-outline-success">
-            Начать чат
-        </a>
-
-    {% endif %}
-
-{% endif %}
-
-            <p><strong>Email:</strong> {{ user_profile.user.email }}</p>
-            <p><strong>Имя:</strong> {{ user_profile.user.first_name }}</p>
-            <p><strong>Фамилия:</strong> {{ user_profile.user.last_name }}</p>
-            <p><strong>Телефон:</strong> {{ user_profile.user.phone_number }}</p>
-            <p><strong>Дата рождения:</strong> {{ user_profile.user.birthdate }}</p>
-            <p><strong>О себе:</strong> {{ user_profile.user.bio }}</p>
-            <p><strong>Любимые жанры:</strong>
-                {% if user_profile.favorite_genres.all %}
-                    {% for genre in user_profile.favorite_genres.all %}
+                             alt="" class="img-fluid rounded-circle" width="150" height="150">
+                        {% endif %}
+                    </div>
+                    <br>
+                    <p><strong>Email:</strong> {{ user_profile.user.email }}</p>
+                    <p><strong>Имя:</strong> {{ user_profile.user.first_name }}</p>
+                    <p><strong>Фамилия:</strong> {{ user_profile.user.last_name }}</p>
+                    <p><strong>Телефон:</strong> {{ user_profile.user.phone_number }}</p>
+                    <p><strong>Дата рождения:</strong> {{ user_profile.user.birthdate }}</p>
+                    <p><strong>О себе:</strong> {{ user_profile.user.bio }}</p>
+                    <p><strong>Любимые жанры:</strong>
+                        {% if user_profile.favorite_genres.all %}
+                        {% for genre in user_profile.favorite_genres.all %}
                         {{ genre.name }}{% if not forloop.last %}, {% endif %}
-                    {% endfor %}
-                {% else %}
-                    Нет указанных жанров
-                {% endif %}
-            </p>
-            <hr>
-            <h3>Друзья:</h3>
-            <ul>
-                {% for friend in user.user_profile.get_friends %}
-                 {% if friend.user == user_profile %}
-                 <a href="{{friend.friend.user_profile.get_absolute_url }}">
-                    <li>{{ friend.friend.username }} </li></a>
-                {% else %}
-                <a href="{{friend.user.user_profile.get_absolute_url }}">
-                <li>{{ friend.user.username }}</li></a>
-                {% endif %}
+                        {% endfor %}
+                        {% else %}
+                        Нет указанных жанров
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+            <br>
+            <br>
+            {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                <li
+                {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
                 {% endfor %}
             </ul>
+            {% endif %}
+            <!-- Add buttons with Bootstrap classes -->
+            <div class="mb-3">
+                {% if is_friend.status == 'accepted' %}
+                <a href="{% url 'delete_friend' user_profile.user.id %}" class="btn btn-danger" type="submit">
+                    Удалить из друзей
+                </a>
+                {% elif is_friend.status == 'pending' %}
+                <a href="{% url 'delete_friend' user_profile.user.id %}" class="btn btn-warning" type="submit">
+                    Отменить запрос
+                </a>
+                {% else %}
+                <a href="{% url 'send_friend_request' user_profile.user.id %}" class="btn btn-success" type="submit">
+                    + Добавить в друзья
+                </a>
+                {% endif %}
+            </div>
+
+            <!-- Add "Начать чат" button -->
+            <div class="mb-3">
+                <a href="{% url 'create_or_open_private_chat' user_id=user_profile.user.id %}"
+                   class="btn btn-outline-success">
+                    Начать чат
+                </a>
+            </div>
+
+            <hr>
+            <h3>Друзья:</h3>
+            <ul class="list-group">
+            {% for friend in user.user_profile.get_friends %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <a href="{% if friend.user == user_profile.user %}
+                                {{ friend.friend.user_profile.get_absolute_url }}
+                             {% else %}
+                                {{ friend.user.user_profile.get_absolute_url }}
+                             {% endif %}"
+                    style="color: inherit; text-decoration: none;">
+                        <img src="
+                            {% if friend.user == user_profile.user %}
+                                {% if friend.friend.user_profile.profile_picture %}
+                                    {{ friend.friend.user_profile.profile_picture.url }}
+                                {% else %}
+                                    https://cdn-icons-png.flaticon.com/512/666/666201.png
+                                 {% endif %}
+
+                            {% else %}
+                                {% if friend.user.user_profile.profile_picture %}
+                                    {{ friend.user.user_profile.profile_picture.url }}
+                                {% else %}
+                                    https://cdn-icons-png.flaticon.com/512/666/666201.png
+                                 {% endif %}
+                            {% endif %}"
+                                 alt="" width="36" height="36" style="border-radius: 50%; margin-right: 10px;">
+                        {% if friend.user == user_profile.user %}
+                        {{ friend.friend.username }}
+                        {% else %}
+                        {{ friend.user.username }}
+                        {% endif %}
+                    </a>
+                    <a href="{% if friend.user == user_profile %}{{ friend.friend.user_profile.get_absolute_url }}{% else %}{{ friend.user.user_profile.get_absolute_url }}{% endif %}"
+                       class="btn btn-primary btn-sm">
+                        Просмотреть профиль
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+
         </div>
         <div class="col-md-6">
-            <!-- Здесь можно добавить фотографию профиля или другие дополнительные сведения -->
+            <!-- You can add additional content here if needed -->
         </div>
     </div>
 </div>
