@@ -61,6 +61,8 @@ $(document).ready(function() {
             {% if user.is_authenticated %}
             <!-- Эти ссылки будут видны только зарегистрированным пользователям -->
             <a class="navbar-brand" href="{% url 'book_list' %}">Книги</a>
+            <a class="navbar-brand" href="{% url 'add_author' %}">Добавить автора</a>
+            <a class="navbar-brand" href="{% url 'genre_add' %}">Добавить жанр</a>
             <a class="navbar-brand" href="{% url 'chat_list' %}">Чаты</a>
             <a class="navbar-brand" href="{% url 'create_group_chat' %}">Создать чат</a>
             <a class="navbar-brand" href="{% url 'private_chat_list' %}">Личные сообщения

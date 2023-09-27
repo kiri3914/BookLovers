@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block content %}
+
+
+<head>
+    <title>Редактирование автора</title>
+</head>
+<body>
+    <h1>Редактирование автора</h1>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Сохранить</button>
+    </form>
+
+
+</body>
+
+{% endblock content %}
