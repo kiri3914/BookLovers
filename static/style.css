@@ -59,3 +59,22 @@ ul.messages li.error {
     border-color: #ebccd1;
     color: #a94442;
 }
+/* Стили для выпадающего меню */
+.dropdown-menu {
+    background-color: #fff; /* Цвет фона меню */
+    border: none; /* Убираем границу */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Тень */
+}
+
+.dropdown-item {
+    color: #333; /* Цвет текста элементов меню */
+}
+
+.dropdown-item:hover {
+    background-color: #f0f0f0; /* Цвет фона при наведении курсора */
+}
+
+/* Стили для бейджа с количеством непрочитанных сообщений */
+.badge.bg-danger {
+    margin-left: 5px; /* Отступ слева от бейджа */
+}
