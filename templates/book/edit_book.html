@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+    <div class="container">
+        <h1>Редактировать книгу "{{ book.title }}"</h1>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="{{ form.title.id_for_label }}">Название</label>
+                {{ form.title }}
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="{{ form.author.id_for_label }}">Автор</label>
+                {{ form.author }}
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="{{ form.genre.id_for_label }}">Жанр</label>
+                {{ form.genre }}
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="{{ form.cover_image.id_for_label }}">Обложка</label>
+                {{ form.cover_image }}
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="{{ form.description.id_for_label }}">Описание</label>
+                {{ form.description }}
+            </div>
+            <br>
+            <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+        </form>
+        <br>
+        <a href="{% url 'book_list' %}" class="btn btn-secondary">Назад к списку книг</a>
+    </div>
+{% endblock %}
