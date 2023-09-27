@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{% load custom_tags %}
 {% block content %}
 <div class="container mt-5">
     <h2 class="text-center mb-4">Личные чаты</h2>
@@ -54,6 +54,11 @@
                         <a href="{{ user.user_profile.get_absolute_url }}">
                         <h5 class="card-title">{{ user.username }}</h5>
                         <a href="{% url 'create_or_open_private_chat' user_id=user.id %}" class="btn btn-sm btn-outline-success float-end">Начать чат</a>
+                        {% if user|has_unread_messages:another_user %}
+                            <span class="badge bg-danger">Новые сообщения</span>
+                        {% endif %}
+
+
                     </div>
                 </div>
             {% else %}

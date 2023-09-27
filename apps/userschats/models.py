@@ -13,7 +13,7 @@ class ChatRoom(models.Model):
     author = models.ForeignKey(CustomUser, on_delete=models.CASCADE,
                                related_name='created_chatrooms', null=True,
                                blank=True)
-
+    all_messages_read = models.BooleanField(default=False)
 
     def __str__(self):
         if self.is_group:
@@ -30,6 +30,7 @@ class Message(models.Model):
     content = models.TextField()
     timestamp = models.DateTimeField(default=timezone.now)
     book_shared = models.ForeignKey(Book, on_delete=models.CASCADE, blank=True, null=True)
+    is_read = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.sender.username}: {self.content[:50]}"
