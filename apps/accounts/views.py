@@ -2,8 +2,10 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
 
-from .forms import CustomUserCreationForm
+from .forms import CustomUserCreationForm,UserSearchForm
 
+from django.contrib.auth.decorators import login_required
+from .models import CustomUser
 
 def login_view(request):
     if request.method == 'POST':
@@ -37,3 +39,27 @@ def register_view(request):
         form = CustomUserCreationForm()
     return render(request, 'accounts/register.html', {'form': form})
 
+
+
+@login_required
+def user_list(request):
+    users = CustomUser.objects.exclude(id=request.user.id)  
+    context = {
+        'users': users,
+    }
+    return render(request, 'accounts/user_list.html', context)
+
+
+
+
+@login_required
+def user_list(request):
+    users = CustomUser.objects.all()
+    form = UserSearchForm(request.GET)
+    
+    if form.is_valid():
+        search_query = form.cleaned_data['search_query']
+        users = users.filter(username__icontains=search_query)
+    
+    context = {'users': users, 'form': form}
+    return render(request, 'accounts/user_list.html', context)
