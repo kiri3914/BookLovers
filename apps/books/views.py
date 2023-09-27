@@ -11,6 +11,7 @@ from ..userschats.models import Message
 from ..activity.froms import ReviewForm
 from ..activity.models import Review
 from ..userschats.models import ChatRoom
+from .forms import BookForm
 
 
 @login_required
@@ -121,6 +122,38 @@ def share_book_in_chat(request):
         return JsonResponse({"status": "success"})
 
 
+def add_book(request):
+    if request.method == 'POST':
+        form = BookForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('book_list')  # Замените 'book_list' на имя вашего представления для списка книг
+    else:
+        form = BookForm()
+
+    return render(request, 'book/add_book.html', {'form': form})
+
+
+def delete_book(request, book_id):
+    book = get_object_or_404(Book, pk=book_id)
+    if request.method == 'POST':
+        book.delete()
+        return redirect('book_list')  # Замените 'book_list' на имя вашего представления для списка книг
+
+    return render(request, 'book/delete_book.html', {'book': book})
+
+
+def edit_book(request, book_id):
+    book = get_object_or_404(Book, pk=book_id)
+    if request.method == 'POST':
+        form = BookForm(request.POST, request.FILES, instance=book)
+        if form.is_valid():
+            form.save()
+            return redirect('book_list')  # Замените 'book_list' на имя вашего представления для списка книг
+    else:
+        form = BookForm(instance=book)
+
+    return render(request, 'book/edit_book.html', {'form': form, 'book': book})
 
 class AuthorCreateView(CreateView):
     model = Author
