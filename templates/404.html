@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container mt-5">
+        <h1 class="text-center">404</h1>
+        <p class="text-center">К сожалению, страница, которую вы искали, не найдена.</p>
+        <p class="text-center">
+            <a href="{% url 'activity_feed' %}" class="btn btn-primary">Вернуться на главную</a>
+        </p>
+    </div>
+{% endblock %}

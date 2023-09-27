@@ -4,11 +4,15 @@ from django.urls import reverse
 
 
 class Author(models.Model):
-    first_name = models.CharField(max_length=50)
-    last_name = models.CharField(max_length=50)
-    bio = models.TextField(blank=True)
-    birth_date = models.DateField(blank=True, null=True)
-    death_date = models.DateField(blank=True, null=True)
+    first_name = models.CharField(max_length=50, verbose_name='Имя')
+    last_name = models.CharField(max_length=50, verbose_name='Фамилия')
+    bio = models.TextField(blank=True, verbose_name='Биография')
+    birth_date = models.DateField(blank=True, null=True, verbose_name='Дата рождения')
+    death_date = models.DateField(blank=True, null=True, verbose_name='Дата смерти')
+
+    class Meta:
+        verbose_name = 'Автор'
+        verbose_name_plural = 'Авторы'
 
     @property
     def count_books(self):
@@ -20,11 +24,17 @@ class Author(models.Model):
 
 # Модель для жанра книги
 class Genre(models.Model):
-    name = models.CharField(max_length=100, unique=True)
-    description = models.TextField(blank=True)
+    name = models.CharField(max_length=100, unique=True, verbose_name='Название')
+    description = models.TextField(blank=True, verbose_name='Описание')
+
+    class Meta:
+        verbose_name = 'Жанр'
+        verbose_name_plural = 'Жанры'
 
     def __str__(self):
         return self.name
+
+
 
 
 # Модель для книги

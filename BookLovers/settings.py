@@ -1,5 +1,10 @@
 import os
+from datetime import timedelta
+
+import dotenv
 from pathlib import Path
+
+dotenv.load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -82,6 +87,17 @@ DATABASES = {
     }
 }
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': os.getenv('NAME'),
+#         'USER': os.getenv('USER'),
+#         'PASSWORD': os.getenv('PASSWORD'),
+#         'HOST': os.getenv('HOST'),
+#         'PORT': os.getenv('PORT')
+#     }
+# }
+
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
 
@@ -103,6 +119,8 @@ DATABASES = {
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
 
+handler404 = 'activity.views.handler404'
+
 LANGUAGE_CODE = 'ru'
 
 TIME_ZONE = 'Asia/Almaty'
@@ -112,9 +130,9 @@ USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+STATIC_ROOT = BASE_DIR / 'static'
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

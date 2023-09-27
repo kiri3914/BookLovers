@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<head>
+    <title>Детали жанра</title>
+</head>
+<body>
+    <div class="container">
+        <h2>Детали жанра</h2>
+
+        <h3>{{ object.name }}</h3>
+
+        {% if object.description %}
+            <p><strong>Описание:</strong> {{ object.description }}</p>
+        {% endif %}
+
+        <a href="{% url 'genre_list' %}" class="btn btn-secondary mt-3">Вернуться к жанрам</a>
+        <a href="{% url 'genre_edit' genre.pk %}" class="btn btn-primary mt-3">Редактировать</a>
+        <a href="{% url 'genre_delete' genre.pk %}" class="btn btn-danger mt-3">Удалить</a>
+    </div>
+</body>
+
+{% endblock content %}

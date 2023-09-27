@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block content %}
+
+
+<head>
+    <title>Об авторе</title>
+</head>
+<body>
+    <h2>Об авторе</h2>
+    <br>
+    <br>
+
+
+    <h3>{{ object.first_name }} {{ object.last_name }}</h3>
+
+    {% if object.birth_date %}
+        <p><strong>Дата рождения:</strong> {{ object.birth_date|date:"d.m.Y" }}</p>
+    {% endif %}
+
+    {% if object.death_date %}
+        <p><strong>Дата смерти:</strong> {{ object.death_date|date:"d.m.Y" }}</p>
+    {% endif %}
+
+    {% if object.bio %}
+        <p><strong>Биография:</strong> {{ object.bio }}</p>
+    {% endif %}
+
+    <a href="{% url 'author_list' %}" class="btn btn-secondary">Вернуться к списку авторов</a>
+    <a href="{% url 'author_edit' author.pk %}" class=" btn btn-primary">Редактировать</a>
+    <a href="{% url 'author_delete' author.pk %}" class=" btn btn-danger">Удалить</a>
+</body>
+
+
+
+{% endblock content %}

@@ -14,10 +14,13 @@ from django.db.models import Q
 def my_profile(request):
     user_profile = UserProfile.objects.get(user=request.user)
 
+
     context = {
         'user_profile': user_profile
+
     }
     return render(request, 'profile/my_profile.html', context)
+
 
 
 @login_required
@@ -25,6 +28,7 @@ def profile_detail(request, profile_id):
     user_profile = get_object_or_404(UserProfile, id=profile_id)
     if user_profile == request.user.user_profile:
         return redirect('my_profile')
+
     # Получить список друзей пользователя
     friends = Friend.objects.filter(user=user_profile.user, status='accepted')
 
@@ -33,7 +37,9 @@ def profile_detail(request, profile_id):
     is_friend = Friend.objects.filter(Q(user=user, friend=friend) | Q(user=friend, friend=user)).first()
 
     context = {'user_profile': user_profile, 'friends': friends, 'is_friend': is_friend}
+
     return render(request, 'profile/profile_detail.html', context)
+
 
 
 @login_required
@@ -139,3 +145,21 @@ def rejected_friend_request(request, user_id):
     friend_request.status = 'rejected'
     friend_request.save()
     return redirect('friends_list')
+
+
+
+def user_list(request):
+    users_list = CustomUser.objects.exclude(id=request.user.id)
+    context = {
+        'user_list': users_list,
+    }
+    return render(request, 'profile/users_list.html', context)
+
+def search_user_list(request):
+    search_query = request.GET.get('search', '')
+    users = CustomUser.objects.filter(username__icontains=search_query)
+    context = {
+        'user_list': users
+    }
+    return render(request, 'profile/users_list.html', context)
+
