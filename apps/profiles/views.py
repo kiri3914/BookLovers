@@ -145,3 +145,21 @@ def rejected_friend_request(request, user_id):
     friend_request.status = 'rejected'
     friend_request.save()
     return redirect('friends_list')
+
+
+
+def user_list(request):
+    users_list = CustomUser.objects.exclude(id=request.user.id)
+    context = {
+        'user_list': users_list,
+    }
+    return render(request, 'profile/users_list.html', context)
+
+def search_user_list(request):
+    search_query = request.GET.get('search', '')
+    users = CustomUser.objects.filter(username__icontains=search_query)
+    context = {
+        'user_list': users
+    }
+    return render(request, 'profile/users_list.html', context)
+
