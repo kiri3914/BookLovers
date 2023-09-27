@@ -77,9 +77,12 @@ def send_message(request, chatroom_id):
     if request.method == "POST":
         content = request.POST.get('content')
         Message.objects.create(chatroom=chatroom, sender=request.user, content=content)
+        Message.objects.filter(chatroom=chatroom, sender=request.user, is_read=False).update(is_read=True)
+
         return redirect('chatroom_detail', chatroom_id=chatroom.id)
 
     return render(request, 'userschats/send_message.html', {'chatroom': chatroom})
+
 
 
 @login_required
@@ -161,28 +164,24 @@ def create_or_open_private_chat(request, user_id):
         return HttpResponseForbidden("You cannot create a chat with yourself.")
 
     # Проверяем наличие чата между данными пользователями
-
     chatroom = ChatRoom.objects.annotate(
         user_count=Count('participants')
     ).filter(
-        participants=user
-    ).filter(
-        participants=user2
-    ).filter(
-        is_group=False
-    ).filter(
-        user_count=2  # Убедитесь, что в чате ровно 2 пользователя
+        Q(participants=user) &
+        Q(participants=user2) &
+        Q(is_group=False) &
+        Q(user_count=2)  # Убедитесь, что в чате ровно 2 пользователя
     ).first()
 
     if chatroom:
         return redirect('chatroom_detail', chatroom_id=chatroom.id)
     else:
         # Если чата нет, создаем новый
-        chatroom = ChatRoom.objects.create(is_group=False)
+        chatroom = ChatRoom.objects.create(
+            is_group=False,
+            room_name=user2.username
+        )
         chatroom.participants.add(request.user, user2)
-        chatroom_name = str(user2.username)
-        chatroom.room_name = chatroom_name
-        chatroom.save()
 
     return redirect('private_chat_detail', chatroom_id=chatroom.id)
 
@@ -193,6 +192,9 @@ def private_chat_detail(request, chatroom_id):
     other_participant = chatroom.get_other_participant(request.user)
     messages = chatroom.messages.all().order_by('timestamp')
 
+    # Помечаем все сообщения, адресованные текущему пользователю, как прочитанные
+    Message.objects.filter(chatroom=chatroom, is_read=False).exclude(sender=request.user).update(is_read=True)
+
     if request.method == "POST":
         content = request.POST.get('content')
         Message.objects.create(chatroom=chatroom, sender=request.user, content=content)
@@ -200,3 +202,4 @@ def private_chat_detail(request, chatroom_id):
 
     return render(request, 'userschats/private_chat_detail.html',
                   {'chatroom': chatroom, 'other_participant': other_participant, 'messages': messages})
+
