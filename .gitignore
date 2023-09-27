@@ -18,7 +18,6 @@ local_settings.py
 
 # Ignore media and static files (served in production)
 /media/
-/static/
 
 # Ignore the secret key (should be kept secret)
 secret_key.txt

@@ -4,55 +4,98 @@
 
 {% block content %}
 <div class="container">
-    <h2>Список друзей</h2>
-    <ul>
-        {% for request in friends_requests %}
-        <li class="d-flex align-items-center">
-             {% if request.user == user %}
-                <a href="{{ request.friend.user_profile.get_absolute_url }}">
-                <img src="{% if request.friend.user_profile.profile_picture %}{{ request.friend.user_profile.profile_picture.url }}{% else %}https://cdn-icons-png.flaticon.com/512/666/666201.png{% endif %}"
-                     alt="" width="36" height="36" style="border-radius: 15px;">
-                <span>{{ request.friend.username }} </span>
-                </a>
-                {% else %}
-            <a href="{{ request.user.user_profile.get_absolute_url }}">
-                <img src="{% if request.user.user_profile.profile_picture %}{{ request.user.user_profile.profile_picture.url }}{% else %}https://cdn-icons-png.flaticon.com/512/666/666201.png{% endif %}"
-                     alt="" width="36" height="36" style="border-radius: 15px;">
-                <span>{{ request.user.username }} </span>
-            </a>
-                {% endif %}
-            <form method="post" action="{% url 'accept_friend_request' user_id=request.user.id %}">
-                {% csrf_token %}/home/ibragim/python_mor/django/ITCvisit
-                <button type="submit" class="btn btn-success btn-sm my-1 mx-1">Принять</button>
-            </form>
-            <form method="post" action="{% url 'rejected_friend_request' user_id=request.user.id %}">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-danger btn-sm my-1 mx-1">Отклонить</button>
-            </form>
-        </li>
+    <div class="row">
+        <div class="col-md-6 mx-auto">
+            <h2 class="mb-4">Список друзей</h2>
+            <div class="card">
+                <div class="card-body">
+                    <ul class="list-unstyled">
+                        {% for request in friends_requests %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            {% if request.user == user %}
+                            <a href="{{ request.friend.user_profile.get_absolute_url }}"
+                               class="d-flex align-items-center" style="color: inherit; text-decoration: none;">
+                                <img src="{% if request.friend.user_profile.profile_picture %}{{ request.friend.user_profile.profile_picture.url }}{% else %}https://cdn-icons-png.flaticon.com/512/666/666201.png{% endif %}"
+                                     alt="" width="36" height="36" style="border-radius: 50%; margin-right: 10px;">
+                                <span>{{ request.friend.username }}</span>
+                            </a>
+                            {% else %}
+                            <a href="{{ request.user.user_profile.get_absolute_url }}" class="d-flex align-items-center"
+                               style="color: inherit; text-decoration: none;">
+                                <img src="{% if request.user.user_profile.profile_picture %}{{ request.user.user_profile.profile_picture.url }}{% else %}https://cdn-icons-png.flaticon.com/512/666/666201.png{% endif %}"
+                                     alt="" width="36" height="36" style="border-radius: 50%; margin-right: 10px;">
+                                <span>{{ request.user.username }}</span>
+                            </a>
+                            {% endif %}
+                            <form method="post" action="{% url 'accept_friend_request' user_id=request.user.id %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-success btn-sm ml-3">Принять</button>
+                            </form>
+                            <form method="post" action="{% url 'rejected_friend_request' user_id=request.user.id %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger btn-sm ml-2">Отклонить</button>
+                            </form>
+                            <a href="{{ request.user.user_profile.get_absolute_url }}"
+                               class="btn btn-primary btn-sm">
+                                Перейти на профиль
+                            </a>
+                        </li>
+                        {% empty %}
+                        <li>У вас нет ожидающих запросов на дружбу.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            <div class="mt-4">
+                <h3>Друзья:</h3>
+                <ul class="list-group">
+                    {% for friend in user.user_profile.get_friends %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <a href="{% if friend.user == user %}
+                                    {{ friend.friend.user_profile.get_absolute_url }}
+                                {% else %}
+                                    {{ friend.user.user_profile.get_absolute_url }}
+                                {% endif %}"
+                           style="color: inherit; text-decoration: none;">
 
 
-        {% empty %}
-        <li>У вас нет ожидающих запросов на дружбу.</li>
-        {% endfor %}
-        <h2>Friends:</h2>
-        <ul class="list-unstyled"> {# Используйте list-unstyled для скрытия маркеров списка Bootstrap #}
-            {% for friend in user.user_profile.get_friends %}
-            <li class="d-flex align-items-center">
-                {% if friend.user == user %}
+                            <img src="
+                            {% if friend.user == user %}
+                                {% if friend.friend.user_profile.profile_picture %}
+                                    {{ friend.friend.user_profile.profile_picture.url }}
+                                {% else %}
+                                    https://cdn-icons-png.flaticon.com/512/666/666201.png
+                                 {% endif %}
 
-                <img src="{% if friend.friend.user_profile.profile_picture %}{{ friend.friend.user_profile.profile_picture.url }}{% else %}https://cdn-icons-png.flaticon.com/512/666/666201.png{% endif %}"
-                     alt="" width="36" height="36" style="border-radius: 15px;">
-                <span>{{ friend.friend.username }} ({{ friend.status }})</span>
-                {% else %}
-                <img src="{% if friend.user.user_profile.profile_picture %}{{ friend.user.user_profile.profile_picture.url }}{% else %}https://cdn-icons-png.flaticon.com/512/666/666201.png{% endif %}"
-                     alt="" width="36" height="36" style="border-radius: 15px;">
-                <span>{{ friend.user.username }} ({{ friend.status }})</span>
-                {% endif %}
-            </li>
-            <br>
-            {% endfor %}
-        </ul>
-    </ul>
+                            {% else %}
+                                {% if friend.user.user_profile.profile_picture %}
+                                    {{ friend.user.user_profile.profile_picture.url }}
+                                {% else %}
+                                    https://cdn-icons-png.flaticon.com/512/666/666201.png
+                                 {% endif %}
+                            {% endif %}"
+                                 alt="" width="36" height="36" style="border-radius: 50%; margin-right: 10px;">
+
+
+                            {% if friend.user == user %}
+                            {{ friend.friend.username }}
+                            {% else %}
+                            {{ friend.user.username }}
+                            {% endif %}
+                        </a>
+                        <a href="{% if friend.user == user_profile %}
+                                {{ friend.friend.user_profile.get_absolute_url }}
+                                {% else %}
+                                {{ friend.user.user_profile.get_absolute_url }}
+                                {% endif %}"
+                           class="btn btn-primary btn-sm">
+                            Перейти на профиль
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock content %}

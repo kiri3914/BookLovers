@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<head>
+    <title>Список жанров</title>
+</head>
+<body>
+    <h1>Список жанров</h1>
+
+    <ul>
+        {% for genre in genres %}
+            <li>
+                <strong><a href="{% url 'genre_detail' genre.pk %}">{{ genre.name }}</a></strong><br>
+
+        {% endfor %}
+    </ul>
+
+   <a href="{% url 'genre_add' %}" class="btn btn-primary mt-3">Добавить жанр</a>
+</body>
+
+{% endblock content %}
